@@ -12,6 +12,7 @@ const EditTask = ({value}) => {
   const [taskDescription, setTaskDescription] = useState(taskData?.state?.description)
   const [isOpen, setIsOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState(taskData?.state?.status);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleTitleChange = (e) => {
     const value = e.target.value;
@@ -48,6 +49,10 @@ const EditTask = ({value}) => {
 
   const updateTask = () => {
    
+    if (!taskTitle || !taskDescription) {
+      setErrorMessage("All fields are mandatory");
+      return; // Prevent further execution if fields are empty
+    }
     const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
 
     const updatedTasks = tasks.map(task => 
@@ -76,6 +81,7 @@ const EditTask = ({value}) => {
         />
         <p style={{ textAlign: "center" }}>Edit Task</p>
       </div>
+      {errorMessage && <p className="error-msg" style={{ color: "red" }}>{errorMessage}</p>}
       <div className="AddParent-container">
         <input
           className="searchBar"

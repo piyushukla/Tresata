@@ -6,6 +6,7 @@ const AddTask = () => {
   const navigate = useNavigate();
   const [taskTitle, setTaskTitle] = useState("");
   const [taskDescription, setTaskDescription] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleTitleChange = (e) => {
     const value = e.target.value;
@@ -13,17 +14,20 @@ const AddTask = () => {
     const isValid = /^[a-zA-Z0-9\s]*$/.test(value);
     if (isValid) {
       setTaskTitle(value);
+      setErrorMessage(""); // Clear error message if input is valid
     }
   };
 
   const clearData = () => {
     setTaskDescription("");
     setTaskTitle("");
+    setErrorMessage(""); // Clear any error message
     navigate("/");
   };
 
   const handleDescriptionChange = (e) => {
     setTaskDescription(e.target.value);
+    setErrorMessage(""); // Clear error message if input is valid
   };
 
   function formatDate(date) {
@@ -39,6 +43,11 @@ const AddTask = () => {
   }
 
   const addTask = () => {
+    if (!taskTitle || !taskDescription) {
+      setErrorMessage("Both fields are mandatory");
+      return; // Prevent further execution if fields are empty
+    }
+
     // Generate a unique ID for the task
     const generateUniqueId = () =>
       `${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
@@ -80,6 +89,8 @@ const AddTask = () => {
         />
         <p style={{ textAlign: "center" }}>Add Task</p>
       </div>
+      {errorMessage && <p className="error-msg" style={{ color: "red" }}>{errorMessage}</p>}
+      {/* <p className="mandatory-msg">Both fields are mandatory</p> */}
       <div className="AddParent-container">
         <input
           className="searchBar"
@@ -101,7 +112,7 @@ const AddTask = () => {
           <button
             className="add-btn"
             onClick={addTask}
-            disabled={taskTitle?.length === 0 && taskDescription?.length === 0}
+            // disabled={!(taskTitle?.length > 0 && taskDescription?.length > 0)}
           >
             ADD
           </button>
